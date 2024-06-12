@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en"xmlns:th="http://wwww.thymeleaf.org" xmlns:layout=""
+      layout:decorate="~{layout/adminLayout}" xmlns:sec>
+<head>
+    <meta charset="UTF-8">
+    <title>Sản phẩm</title>
+</head>
+<body layout:fragment="content">
+<div class="overflow-x-auto">
+    <div class="flex items-center space-x-4 my-2">
+
+        <!-- Ô nhập liệu tìm kiếm -->
+        <form id="filterForm" th:action="@{/admin/product}" method="GET" class="flex">
+            <input type="hidden" id="" th:value="${param.p}" name="p">
+
+            <div class="border rounded mr-3 p-2">
+                <label for="search" class="text-gray-700">Search:</label>
+                <input type="text" id="search" th:value="${param.search}" name="keywords" class="block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+            </div>
+
+            <!-- Bộ lọc theo active -->
+            <div class="border rounded mx-3 p-2">
+                <label for="activeFilter" class="text-gray-700">Active:</label>
+                <select id="activeFilter" name="active" class="block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                    <option value="true">Active</option>
+                    <option value="false">Inactive</option>
+                </select>
+            </div>
+
+            <!-- Bộ lọc theo giá -->
+            <div class=" border rounded mx-3 p-2">
+                <label for="priceFilter" class="text-gray-700">Price:</label>
+                <select id="priceFilter" name="orderByPrice" class="block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                    <option value="1">Low to High</option>
+                    <option value="0">High to Low</option>
+                </select>
+            </div>
+
+            <!-- Bộ lọc theo danh mục -->
+            <div class="border rounded mx-3 p-2" >
+                <label for="categoryFilter" class="text-gray-700">Category:</label>
+                <select id="categoryFilter" name="category"  class="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                    <option value="">All</option> <!-- Thêm lựa chọn "All" -->
+                    <option th:each="category : ${categories}" th:value="${category.id}" th:text="${category.name}">Category Name</option>
+                </select>
+            </div>
+
+
+            <!-- Nút Lọc ẩn -->
+            <button type="submit" id="filterButton" class="px-8 text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-5  dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"> Lọc</button>
+
+        </form>
+        <script>
+            // Lắng nghe sự kiện thay đổi trên các phần tử bộ lọc
+            document.querySelectorAll('#search, #activeFilter, #priceFilter, #categoryFilter').forEach(function(element) {
+                element.addEventListener('change', function() {
+                    // Kích hoạt sự kiện click cho nút ẩn khi các phần tử bộ lọc thay đổi
+                    document.getElementById('filterButton').click();
+                });
+            });
+        </script>
+
+    </div>
+
+
+    <table class="min-w-full bg-white shadow-md rounded mb-4">
+        <thead>
+        <tr class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
+            <th class="py-3 px-6 text-left">Id</th>
+            <th class="py-3 px-6 text-left">Tên sản phẩm</th>
+            <th class="py-3 px-6 text-left">Thời gian tạo</th>
+            <th class="py-3 px-6 text-left">Giá</th>
+            <th class="py-3 px-6 text-left">Danh mục</th>
+            <th class="py-3 px-6 text-center">Trạng thái</th>
+
+        </tr>
+        </thead>
+        <tbody class="text-gray-600 text-sm font-light">
+        <!-- User data will be populated here -->
+        <tr th:each="product : ${page.content}">
+            <td class="py-3 px-6 text-center  whitespace-nowrap" >
+                <span th:text="${product.id}" class="mb-2"> </span>
+                <span>
+                    <img class="w-10 h-10 rounded" th:if="${product.image != null}" th:src="@{'/uploads/products/' + ${product.image}}" alt="Product Image" />
+                    <img class="w-10 h-10 rounded" th:unless="${product.image != null}" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQetgUM2uQNvbSmfkccBsxq0Dn_IBqDPL198A&s" alt="Default Image" />
+
+                </span>
+            </td>
+            <td class="py-3 px-6 text-left" th:text="${product.name}"></td>
+            <td class="py-3 px-6 text-left" th:text="${product.createDate}"></td>
+            <td class="py-3 px-6 text-left" th:text="${product.price}"></td>
+            <td class="py-3 px-6 text-left" th:text="${product.category.name}"></td>
+
+
+            <td class="py-3 px-6 text-center flex">
+            <a th:href="@{/admin/product/update/{id}(id=${product.id})}" class="text-blue-600 hover:underline mr-3">Edit</a>
+
+            <form th:action="@{/admin/product/active/{id}(id=${product.id})}" method="get">
+                <label class="inline-flex items-center cursor-pointer">
+                    <input type="checkbox" class="accent-pink-500" th:checked="${product.active}" onchange="this.form.submit()">
+                    <input type="hidden" name="active" th:value="${!product.active}">
+                </label>
+            </form>
+            </td>
+
+
+
+        </tr>
+
+        </tbody>
+    </table>
+        <div class="flex justify-center" th:if="${page.totalElements > 0}">
+            <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+                <a th:if="${page.number > 0}" th:href="@{/admin/product(p=${page.number - 1},keywords=${param.keywords},orderByPrice=${param.orderByPrice},active=${param.active})}"
+                   class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">Previous</a>
+                <span th:each="pageNum : ${#numbers.sequence(0, page.totalPages - 1)}">
+                <a th:href="@{/admin/product(p=${pageNum},keywords=${param.keywords},orderByPrice=${param.orderByPrice},active=${param.active})}"
+                   class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50"
+                   th:classappend="${pageNum == page.number} ? 'bg-gray-200' : ''" th:text="${pageNum + 1}">1</a>
+            </span>
+                <a th:if="${page.number < page.totalPages - 1}" th:href="@{/admin/product(p=${page.number + 1},keywords=${param.keywords},orderByPrice=${param.orderByPrice},active=${param.active})}"
+                   class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">Next</a>
+            </nav>
+        </div>
+</div>
+
+<!-- Add New User Button -->
+<div class="flex justify-end">
+    <a th:href="@{/admin/product/add}" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-500">Add New User</a>
+</div>
+
+
+</body>
+</html>
