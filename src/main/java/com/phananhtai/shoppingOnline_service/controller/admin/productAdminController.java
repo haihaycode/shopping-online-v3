@@ -42,6 +42,9 @@ public class productAdminController {
             @RequestParam("active") Optional<Boolean> active,
             Model model
     ) {
+        int totalProduct = productDAO.findAll().size();
+        int totalProductActive = productDAO.getAllByActive(true).size();
+
         String kw = keywords.orElse("");
         Integer catId = categoryId.orElse(null);
         Boolean orderByPriceAsc = orderByPrice.orElse(1) == 1;
@@ -63,7 +66,8 @@ public class productAdminController {
         model.addAttribute("kw", kw);
         model.addAttribute("categoryId", catId);
         model.addAttribute("orderByPrice", orderByPriceAsc);
-
+        model.addAttribute("totalProducts", totalProduct);
+        model.addAttribute("totalProductActive", totalProductActive);
 
         return "admin/product/product";
     }
@@ -161,12 +165,12 @@ public class productAdminController {
     }
 
     @GetMapping("/admin/product/active/{id}")
-    public String activeProduct(@PathVariable("id") int id, @RequestParam("active") Boolean active) {
+    public String activeProduct(@PathVariable("id") int id, @RequestParam("active") Boolean active ) {
 
         Product product = productDAO.getProductById(id);
         product.setActive(active);
         productDAO.save(product);
-        return "redirect:/admin/product";
+        return "redirect:/admin/product?active=false";
     }
 
 

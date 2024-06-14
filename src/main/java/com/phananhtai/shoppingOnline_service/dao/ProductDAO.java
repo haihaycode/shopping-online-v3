@@ -14,6 +14,7 @@ import java.util.List;
 public interface ProductDAO extends JpaRepository<Product, Integer> {
 
         List<Product> findByPriceBetween(Double min, Double max);
+        List<Product> findAllByCategoryId(String categoryId);
 
         @Query("SELECT p FROM Product p WHERE p.name LIKE %:keywords% AND p.active = :active AND p.category.id = :categoryId " +
                 "ORDER BY p.price ASC")
@@ -68,6 +69,9 @@ public interface ProductDAO extends JpaRepository<Product, Integer> {
 
         Product getProductByIdAndActive(Integer id,Boolean active);
         Product getProductById(Integer id);
+        List<Product> getAllByActive(boolean active);
+
+
 
 
 }

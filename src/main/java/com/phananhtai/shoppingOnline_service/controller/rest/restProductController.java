@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 public class restProductController {
     @Autowired
@@ -28,5 +30,12 @@ public class restProductController {
         Pageable pageable = PageRequest.of(page, size);
         return productDAO.getAllByActiveOrderByIdAsc(active, pageable);
     }
+
+    @GetMapping("/api/v1/products/byCategory")
+    public List<Product> getProductsByCategory(@RequestParam(name = "categoryId") String categoryId) {
+        return productDAO.findAllByCategoryId(categoryId);
+    }
+
+
 
 }

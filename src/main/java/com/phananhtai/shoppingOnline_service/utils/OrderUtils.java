@@ -1,6 +1,8 @@
 package com.phananhtai.shoppingOnline_service.utils;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.Random;
 
@@ -38,6 +40,22 @@ public class OrderUtils {
 
         return orderCode;
     }
+    public static String generateUniqueId() {
+        // Lấy ngày tháng năm và thời gian hiện tại
+        LocalDateTime currentDateTime = LocalDateTime.now();
+
+        // Định dạng để chuyển LocalDateTime thành chuỗi theo yêu cầu
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyMMddHHmmssSSS");
+
+        // Chuyển đổi thành chuỗi ID
+        String idString = currentDateTime.format(formatter);
+
+        // Lấy 6 ký tự cuối cùng của chuỗi ID
+        String sixCharId = idString.substring(idString.length() - 6);
+
+        return sixCharId;
+    }
+
 
     // Hàm main để kiểm tra
     public static void main(String[] args) {

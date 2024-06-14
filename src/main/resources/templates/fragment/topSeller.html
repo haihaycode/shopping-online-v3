@@ -11,8 +11,8 @@
   <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 px-6 gap-3">
     <!-- Loop through top sellers -->
     <div th:each="product : ${page.content}" class="block max-w-sm rounded-lg bg-white bg-cover p-6 shadow-lg dark:bg-neutral-700">
-      <img class="rounded-t-lg mb-2" th:if="${product.image != null}" th:src="@{'/uploads/products/' + ${product.image}}" alt="Product Image" />
-      <img class="rounded-t-lg mb-2" th:unless="${product.image != null}" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQetgUM2uQNvbSmfkccBsxq0Dn_IBqDPL198A&s" alt="Default Image" />
+      <img class="rounded-t-lg mb-2" style="height: 300px" th:if="${product.image != null}" th:src="@{'/uploads/products/' + ${product.image}}" alt="Product Image" />
+      <img class="rounded-t-lg mb-2" style="height: 300px" th:unless="${product.image != null}" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQetgUM2uQNvbSmfkccBsxq0Dn_IBqDPL198A&s" alt="Default Image" />
 
       <h5 class="mb-2 text-xl font-medium leading-tight text-neutral-800 dark:text-neutral-50"
           th:text="${product.name}">Product Name</h5>

@@ -17,4 +17,6 @@ public interface CategoryDAO extends JpaRepository<Category, String> {
     Page<Category> findByActive(boolean active, Pageable pageable);
 
     Optional<Category> findByIdAndActive(String id,boolean active);
+
+    Page<Category> findByActiveAndNameContaining(boolean active, String name, Pageable pageable);
 }

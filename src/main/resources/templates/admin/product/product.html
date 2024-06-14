@@ -7,59 +7,70 @@
 </head>
 <body layout:fragment="content">
 <div class="overflow-x-auto">
-    <div class="flex items-center space-x-4 my-2">
 
-        <!-- Ô nhập liệu tìm kiếm -->
-        <form id="filterForm" th:action="@{/admin/product}" method="GET" class="flex">
-            <input type="hidden" id="" th:value="${param.p}" name="p">
-
-            <div class="border rounded mr-3 p-2">
-                <label for="search" class="text-gray-700">Search:</label>
-                <input type="text" id="search" th:value="${param.search}" name="keywords" class="block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
+        <div class="bg-slate-50 p-5 m-2 rounded-md flex justify-between items-center shadow">
+            <div>
+                <h3 class="font-bold">Total Products</h3>
+                <p class="text-gray-500" th:text="${totalProducts}">100</p>
             </div>
+            <i class="fas fa-tachometer-average  rounded-md"></i>
+        </div>
 
+        <div class="bg-slate-50 p-5 m-2 flex justify-between items-center shadow">
+            <div>
+                <h3 class="font-bold">Total Active Products</h3>
+                <p class="text-gray-500" th:text="${totalProductActive}">65</p>
+            </div>
+            <i class="fas fa-tachometer-average  rounded-md"></i>
+        </div>
+
+        <div class="bg-slate-50 p-5 m-2 flex justify-between items-center shadow">
+            <div>
+                <h3 class="font-bold">Total In Active Products</h3>
+                <p class="text-gray-500" th:text="${totalProducts} - ${totalProductActive}">30</p>
+            </div>
+            <i class="fas fa-tachometer-average rounded-md"></i>
+        </div>
+
+
+    </div>
+
+    <div class="">
+        <form id="filterForm" th:action="@{/admin/product}" method="GET"  class="flex space-x-2 my-2">
+            <input type="hidden" th:value="${param.p}" name="p">
+            <div class="flex-1">
+                <label for="search" class="block text-sm font-medium text-gray-700">Keywords</label>
+                <input type="text" id="search" th:value="${param.search}" name="keywords"  class="p-3 mt-1 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
+            </div>
             <!-- Bộ lọc theo active -->
-            <div class="border rounded mx-3 p-2">
-                <label for="activeFilter" class="text-gray-700">Active:</label>
-                <select id="activeFilter" name="active" class="block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-                    <option value="true">Active</option>
-                    <option value="false">Inactive</option>
+            <div class="flex-1">
+                <label for="activeFilter" class="block text-sm font-medium text-gray-700">Active</label>
+                <select id="activeFilter" name="active" class="p-3 mt-1 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
+                    <option th:value="true" th:selected="${active} == true">Active</option>
+                    <option th:value="false" th:selected="${active} == false">Inactive</option>
                 </select>
             </div>
-
             <!-- Bộ lọc theo giá -->
-            <div class=" border rounded mx-3 p-2">
-                <label for="priceFilter" class="text-gray-700">Price:</label>
-                <select id="priceFilter" name="orderByPrice" class="block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-                    <option value="1">Low to High</option>
-                    <option value="0">High to Low</option>
+            <div class="flex-1">
+                <label for="orderByFilter" class="block text-sm font-medium text-gray-700">Order By</label>
+                <select id="orderByFilter" name="orderByPrice" class="p-3 mt-1 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
+                    <option value="1" >Low to High</option>
+                    <option value="0" >High to low</option>
                 </select>
             </div>
-
             <!-- Bộ lọc theo danh mục -->
-            <div class="border rounded mx-3 p-2" >
-                <label for="categoryFilter" class="text-gray-700">Category:</label>
-                <select id="categoryFilter" name="category"  class="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+            <div class="flex-1">
+                <label for="" class="block text-sm font-medium text-gray-700">Order By</label>
+                <select id="" name="category" class="p-3 mt-1 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
                     <option value="">All</option> <!-- Thêm lựa chọn "All" -->
                     <option th:each="category : ${categories}" th:value="${category.id}" th:text="${category.name}">Category Name</option>
                 </select>
             </div>
-
-
-            <!-- Nút Lọc ẩn -->
-            <button type="submit" id="filterButton" class="px-8 text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-5  dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"> Lọc</button>
-
+            <div class="flex-1 self-end">
+                <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-6">Filter</button>
+            </div>
         </form>
-        <script>
-            // Lắng nghe sự kiện thay đổi trên các phần tử bộ lọc
-            document.querySelectorAll('#search, #activeFilter, #priceFilter, #categoryFilter').forEach(function(element) {
-                element.addEventListener('change', function() {
-                    // Kích hoạt sự kiện click cho nút ẩn khi các phần tử bộ lọc thay đổi
-                    document.getElementById('filterButton').click();
-                });
-            });
-        </script>
-
     </div>
 
 

@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en"xmlns:th="http://wwww.thymeleaf.org" xmlns:layout=""
+      layout:decorate="~{layout/adminLayout}" xmlns:sec>
+<head>
+    <title>Categories List</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+</head>
+<body layout:fragment="content">
+<div class="container mx-auto mt-8 flex">
+    <!-- Form bên trái -->
+    <div class="w-1/4 p-4 border-r border-gray-200">
+        <form th:action="@{/admin/categories}" th:object="${category}" method="post" class="space-y-6">
+            <input type="hidden" th:field="*{id}" />
+            <div>
+                <label for="name" class="block text-sm font-medium text-gray-700">Category Name</label>
+                <input type="text" id="name" th:field="*{name}" class="p-3 mt-1 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md" placeholder="Enter category name">
+                <span th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="text-red-500 text-sm"></span>
+            </div>
+            <div>
+                <label for="description" class="block text-sm font-medium text-gray-700">Category Description</label>
+                <textarea id="description" th:field="*{description}" rows="3" class="p-3 mt-1 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md" placeholder="Enter category description"></textarea>
+                <span th:if="${#fields.hasErrors('description')}" th:errors="*{description}" class="text-red-500 text-sm"></span>
+            </div>
+            <div>
+                <label for="active" class="block text-sm font-medium text-gray-700">Active</label>
+                <select id="active" th:field="*{active}" class="p-3 mt-1 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
+                    <option value="true">Active</option>
+                    <option value="false">Inactive</option>
+                </select>
+            </div>
+            <div class="flex justify-end">
+                <button type="submit" name="status" value="add" class="bg-blue-500 hover:bg-blue-700 text-white font-bold px-4 mr-1 rounded">Add Category</button>
+                <button type="submit"  name="status" value="update" class="bg-blue-500 hover:bg-blue-700 text-white font-bold  px-4 rounded">Update Category</button>
+
+            </div>
+        </form>
+
+    </div>
+
+    <!-- Danh sách bên phải -->
+    <div class="w-3/4 p-4">
+        <!--form add-->
+        <div class="mb-4">
+            <form action="#" th:action="@{/admin/categories}" method="get" class="flex space-x-4">
+                <input type="hidden" name="p" value="0">
+                <div class="flex-1">
+                    <label for="keywordsFilter" class="block text-sm font-medium text-gray-700">Keywords</label>
+                    <input type="text" id="keywordsFilter" name="keywords" th:value="${keywords}" class="p-3 mt-1 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
+                </div>
+                <div class="flex-1">
+                    <label for="activeFilter" class="block text-sm font-medium text-gray-700">Active</label>
+                    <select id="activeFilter" name="active" class="p-3 mt-1 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
+                        <option th:value="true" th:selected="${active} == true">Active</option>
+                        <option th:value="false" th:selected="${active} == false">Inactive</option>
+                    </select>
+                </div>
+                <div class="flex-1">
+                    <label for="orderByFilter" class="block text-sm font-medium text-gray-700">Order By</label>
+                    <select id="orderByFilter" name="orderBy" class="p-3 mt-1 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
+                        <option value="id" th:selected="${orderBy} == 'id'">ID</option>
+                        <option value="name" th:selected="${orderBy} == 'name'">Name</option>
+                    </select>
+                </div>
+                <div class="flex-1 self-end">
+                    <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-6">Filter</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="flex justify-end items-center mb-4">
+            <div>
+                <form action="#" th:action="@{/admin/categories}" method="get" class="inline">
+                    <input type="hidden" name="keywords" th:value="${keywords}">
+                    <input type="hidden" name="active" th:value="${active}">
+                    <input type="hidden" name="orderBy" th:value="${orderBy}">
+                    <input type="hidden" name="p" th:value="${categoryPage.number - 1}">
+                    <button type="submit" class="text-blue-500" th:disabled="${!categoryPage.hasPrevious()}">Previous</button>
+                </form>
+                <form action="#" th:action="@{/admin/categories}" method="get" class="inline">
+                    <input type="hidden" name="keywords" th:value="${keywords}">
+                    <input type="hidden" name="active" th:value="${active}">
+                    <input type="hidden" name="orderBy" th:value="${orderBy}">
+                    <input type="hidden" name="p" th:value="${categoryPage.number + 1}">
+                    <button type="submit" class="text-blue-500" th:disabled="${!categoryPage.hasNext()}">Next</button>
+                </form>
+            </div>
+        </div>
+
+        <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+            <tr>
+                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Active</th>
+                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Operation</th>
+            </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+            <tr th:each="category : ${categoryPage.content}">
+                <td class="px-6 py-4 whitespace-nowrap" th:text="${category.id}">ID</td>
+                <td class="px-6 py-4 whitespace-nowrap" th:text="${category.name}">Name</td>
+                <td class="px-6 py-4 whitespace-nowrap" >
+                    <form th:action="@{/admin/categories/active/{id}(id=${category.id})}" method="get">
+                        <label class="inline-flex items-center cursor-pointer">
+                            <input type="checkbox" class="accent-pink-500" th:checked="${category.active}" onchange="this.form.submit()">
+                            <input type="hidden" name="active" th:value="${!category.active}">
+                        </label>
+                    </form>
+
+
+
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                    <form action="#" th:action="@{'/admin/categories/edit/' + ${category.id}}" method="get" class="inline">
+                        <input type="hidden" name="keywords" th:value="${keywords}">
+                        <input type="hidden" name="active" th:value="${active}">
+                        <input type="hidden" name="orderBy" th:value="${orderBy}">
+                        <input type="hidden" name="p" th:value="${categoryPage.number}">
+                        <button type="submit" class="bg-blue-500 px-4 py-2 rounded text-sm">
+                            <i class="fad fa-edit text-white"></i>
+                        </button>
+                    </form>
+                    <button
+                            id="viewProductsButton"
+                            th:data-category-id="${category.id}"
+                            class="px-4 py-2 text-white bg-blue-500 text-sm hover:bg-blue-600 rounded-md focus:outline-none">
+                        Views products
+                    </button>
+                </td>
+
+            </tr>
+            </tbody>
+        </table>
+
+        <div class="mt-4">
+            <span th:text="'Page ' + (${categoryPage.number} + 1) + ' of ' + ${categoryPage.totalPages}"></span>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div id="productModal" class="fixed inset-0 flex items-center justify-center z-50 hidden">
+    <div class="bg-white p-8 rounded-lg shadow-lg w-2/3">
+        <div class="flex justify-between items-center mb-4">
+            <h2 class="text-xl font-bold">Danh sách sản phẩm</h2>
+            <button id="closeModalButton1" class="text-gray-500 hover:text-gray-700">&times;</button>
+        </div>
+        <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+            <tr>
+                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price</th>
+            </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200" id="productList">
+            <!-- Sản phẩm sẽ được thêm vào đây bằng JavaScript -->
+            </tbody>
+        </table>
+        <div class="mt-4 flex justify-end">
+            <button id="closeModalButton2" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Đóng</button>
+        </div>
+    </div>
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // Lấy các phần tử DOM
+        const viewProductsButtons = document.querySelectorAll('#viewProductsButton');
+        const productModal = document.getElementById('productModal');
+        const closeModalButtons = [document.getElementById('closeModalButton1'), document.getElementById('closeModalButton2')];
+        const productList = document.getElementById('productList');
+
+        viewProductsButtons.forEach(button => {
+            button.addEventListener('click', async function() {
+                const categoryId = this.getAttribute('data-category-id');
+                try {
+                    const response = await axios.get(`/api/v1/products/byCategory?categoryId=${categoryId}`);
+                    const products = response.data;
+
+                    // Xóa các sản phẩm cũ trong bảng
+                    productList.innerHTML = '';
+
+                    // Thêm các sản phẩm mới vào bảng
+                    products.forEach(product => {
+                        const productRow = document.createElement('tr');
+                        productRow.innerHTML = `
+                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${product.id}</td>
+                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 overflow-hidden overflow-ellipsis">${product.name}</td>
+                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${product.price}</td>
+                    `;
+                        productList.appendChild(productRow);
+                    });
+
+                    // Hiển thị modal
+                    productModal.classList.remove('hidden');
+                } catch (error) {
+                    console.error('Error fetching products:', error);
+                }
+            });
+        });
+
+        closeModalButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                productModal.classList.add('hidden');
+            });
+        });
+
+        // Đóng modal khi nhấp bên ngoài
+        window.addEventListener('click', function(event) {
+            if (event.target === productModal) {
+                productModal.classList.add('hidden');
+            }
+        });
+    });
+</script>
+
+</body>
