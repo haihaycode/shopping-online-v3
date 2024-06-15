@@ -26,7 +26,7 @@ public class Category  implements Serializable {
 
     @NotBlank(message = "Name is required")
     private String name;
-    @NotBlank(message = "Description is required")
+
     private String description;
 
     @NotNull(message = "Active status is required")

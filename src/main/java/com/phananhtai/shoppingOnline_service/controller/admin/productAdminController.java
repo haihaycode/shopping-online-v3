@@ -18,6 +18,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
 import java.util.Date;
@@ -79,7 +80,7 @@ public class productAdminController {
 
 
     @PostMapping("/admin/product/add")
-    public String addProduct(@Valid @ModelAttribute("productNew") ProductDTO product, BindingResult result) {
+    public String addProduct(@Valid @ModelAttribute("productNew") ProductDTO product, BindingResult result,Model model,RedirectAttributes redirectAttributes) {
         if (result.hasErrors()) {
             return "/admin/product/addProduct";
         }
@@ -104,6 +105,7 @@ public class productAdminController {
             }
         }
         productDAO.save(newProduct);
+        redirectAttributes.addFlashAttribute("success", "Thêm sản phẩm thành công");
         return "redirect:/admin/product";
     }
 
@@ -123,20 +125,26 @@ public class productAdminController {
             model.addAttribute("productNew", productDTO);
 
         } else {
+            model.addAttribute("productNew", new ProductDTO());
             // Nếu không tồn tại, ném ra một ngoại lệ hoặc thực hiện xử lý phù hợp
-            throw new RuntimeException("Product not found with id: " + productId);
+            model.addAttribute("danger", "Product not found with id: " + productId);
         }
 
         return "/admin/product/updateProduct";
     }
 
     @PostMapping("/admin/product/update")
-    public String updateProduct(@Valid @ModelAttribute("productNew") ProductDTO product, BindingResult result) {
+    public String updateProduct(@Valid @ModelAttribute("productNew") ProductDTO product, BindingResult result, Model model,RedirectAttributes redirectAttributes) {
         if (result.hasErrors()) {
             return "/admin/product/updateProduct";
         }
 
         Product newProduct = productDAO.getProductById(product.getId());
+        if (newProduct == null) {
+            redirectAttributes.addFlashAttribute("danger", "id not found");
+            return "redirect:/admin/product?error=true";
+        }
+
         categoryDAO.findByIdAndActive(Integer.toString(product.getIdCategory()), true).ifPresent(newProduct::setCategory);
         newProduct.setName(product.getName());
         newProduct.setActive(product.getActive());
@@ -149,29 +157,39 @@ public class productAdminController {
 
             try {
                 imageStorageService.storeImage(product.getPhoto(), image);
-                if(newProduct.getImage()!=null ){
-                    imageStorageService.deleteImage(product.getImage());
+                if (newProduct.getImage() != null) {
+                    imageStorageService.deleteImage(newProduct.getImage());
                 }
-                newProduct.setImage(image+".png");
+                newProduct.setImage(image + ".png");
             } catch (IOException e) {
                 System.err.println("Error saving image: " + e.getMessage());
                 throw new RuntimeException("Error saving image", e);
             }
-        }else{
+        } else {
             newProduct.setImage(newProduct.getImage());
         }
+
         productDAO.save(newProduct);
+        redirectAttributes.addFlashAttribute("success", "Cập nhật thành công");
         return "redirect:/admin/product";
     }
 
-    @GetMapping("/admin/product/active/{id}")
-    public String activeProduct(@PathVariable("id") int id, @RequestParam("active") Boolean active ) {
 
+    @GetMapping("/admin/product/active/{id}")
+    public String activeProduct(@PathVariable("id") int id, @RequestParam("active") Boolean active, Model model, RedirectAttributes redirectAttributes) {
         Product product = productDAO.getProductById(id);
+
+        if (product == null) {
+            redirectAttributes.addFlashAttribute("danger", "Product with ID " + id + " not found.");
+            return "redirect:/admin/product?error=true";
+        }
+
         product.setActive(active);
         productDAO.save(product);
-        return "redirect:/admin/product?active=false";
+        redirectAttributes.addFlashAttribute("success", "Cập nhật thành công");
+        return "redirect:/admin/product?active=" + active;
     }
+
 
 
 }

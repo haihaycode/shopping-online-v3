@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en"xmlns:th="http://wwww.thymeleaf.org" xmlns:layout=""
+      layout:decorate="~{layout/adminLayout}" xmlns:sec>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Order List</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body layout:fragment="content">
+
+<div class="mb-4">
+  <form action="#" th:action="@{/admin/orders}" method="get" class="flex space-x-4">
+    <input type="hidden" name="p" th:value="${p}">
+    <div class="flex-1">
+      <label for="keywordsFilter" class="block text-sm font-medium text-gray-700">Keywords</label>
+      <input type="text" id="keywordsFilter" name="keywords" th:value="${keywords}" class="p-3 mt-1 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
+    </div>
+    <div class="flex-1">
+      <label for="activeFilter" class="block text-sm font-medium text-gray-700">Trạng thái đơn hàng</label>
+        <select id="activeFilter" name="idOrderStatus" class="p-3 mt-1 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
+          <option value="">All</option>
+          <option th:each="status : ${OrderStatus}"
+                  th:value="${status.id}"
+                  th:text="${status.status}"
+                  th:selected="${idOrderStatus.isPresent() && idOrderStatus.get() == status.id}"></option>
+      </select>
+    </div>
+    <div class=" flex-1 ">
+      <label for="before" class="block text-sm font-medium text-gray-700">Before Date:</label>
+      <input type="date" id="before" name="before"  th:value="${start}" class="p-3 mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
+    </div>
+    <div class=" flex-1">
+      <label for="after" class="block text-sm font-medium text-gray-700">After Date:</label>
+      <input type="date" id="after" name="after"  th:value="${end}" class=" p-3  mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
+    </div>
+    <div class="flex-1">
+      <label for="orderByFilter" class="block text-sm font-medium text-gray-700">Order By</label>
+      <select id="orderByFilter" name="orderBy" class="p-3 mt-1 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
+        <option value="id" th:selected="${orderBy} == 'id'">id</option>
+        <option value="address" th:selected="${orderBy} == 'address'">address</option>
+        <option value="fullName" th:selected="${orderBy} == 'fullName'">fullName</option>
+        <option value="phone" th:selected="${orderBy} == 'phone'">phone</option>
+        <option value="totalPrice" th:selected="${orderBy} == 'totalPrice'">totalPrice</option>
+      </select>
+    </div>
+    <div class="flex-1 self-end">
+      <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-6">Filter</button>
+    </div>
+  </form>
+</div>
+
+
+<div class="container mx-auto py-8">
+  <div class="flex flex-col">
+    <div class="overflow-x-auto sm:-mx-6 lg:-mx-8">
+      <div class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
+        <div class="overflow-hidden border-b border-gray-200 shadow sm:rounded-lg">
+          <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+            <tr>
+              <th scope="col" class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">Order Code</th>
+              <th scope="col" class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">Full Name</th>
+              <th scope="col" class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">Address</th>
+              <th scope="col" class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">Phone</th>
+              <th scope="col" class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">Order Status</th>
+              <th scope="col" class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">Order Details</th>
+            </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200" th:each="order : ${orderPage.content}">
+            <tr>
+              <td class="px-6 py-4 text-sm text-gray-500" th:text="${order.oderCode}">Order Code</td>
+              <td class="px-6 py-4 text-sm text-gray-500" th:text="${order.fullName}">Full Name</td>
+              <td class="px-6 py-4 text-sm text-gray-500" th:text="${order.address}">Address</td>
+              <td class="px-6 py-4 text-sm text-gray-500" th:text="${order.phone}">Phone</td>
+              <td class="px-6 py-4 text-sm text-gray-500" >
+                <form action="#" th:action="@{/admin/orders/updateStatus}" method="post">
+                  <input type="hidden" name="orderId" th:value="${order.id}">
+                  <select name="orderStatusId"  class="p-3 mt-1 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md" onchange="this.form.submit()">
+                    <option th:each="status : ${OrderStatus}" th:value="${status.id}" th:text="${status.status}" th:selected="${order.orderStatus.id == status.id}"></option>
+                  </select>
+                </form>
+              </td>
+
+              <td class="px-6 py-4 text-sm text-gray-500">
+                <div class="flex justify-center">
+                  <button th:onclick="|openModal('modal-${order.id}')|"
+                          class="bg-blue-500     hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                   View detail
+                  </button>
+                </div>
+
+                <!-- Modal -->
+                <div  th:id="'modal-'+${order.id}" class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 hidden" style="left: 200px">
+                  <div class="bg-white rounded-lg shadow-lg w-full  p-6" style="width: 75%">
+                    <div class="flex justify-between items-center border-b pb-3">
+                      <h2 class="text-xl font-bold">Order Details</h2>
+                      <button class="text-red-500"  th:onclick="|closeModal('modal-${order.id}')|">&times;</button>
+                    </div>
+                    <div class="list-disc pl-5 mt-4 space-y-2">
+
+                      <div class="mb-4">
+                        <p class="text-gray-600" >Mã đơn hàng: <span class="font-semibold" th:text="${order.oderCode}">...</span></p>
+                        <p class="text-gray-600">Thời gian thanh toán: <span class="font-semibold" th:text="${order.getCreateDate()}">...</span></p>
+                      </div>
+
+                      <div class="relative overflow-x-auto">
+                        <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                          <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                          <tr>
+                            <th scope="col" class="px-6 py-3">
+                              Product name
+                            </th>
+                            <th scope="col" class="px-6 py-3">
+                             Qty
+                            </th>
+                            <th scope="col" class="px-6 py-3">
+                              Price Stock
+                            </th>
+                            <th scope="col" class="px-6 py-3">
+                             Price
+                            </th>
+
+                          </tr>
+                          </thead>
+                          <tbody>
+                          <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700" th:each="details : ${order.orderDetails}">
+                            <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white" th:text="${details.product.name}" >
+                            </th>
+                            <td class="px-6 py-4" th:text="${details.quantity}" >
+                            </td>
+                            <td class="px-6 py-4"th:text="${details.product.price}">
+                            </td>
+                            <td class="px-6 py-4"th:text="${details.price}">
+                            </td>
+
+                          </tr>
+                          </tbody>
+                        </table>
+                      </div>
+
+                    </div>
+                    <div class="flex justify-end mt-4">
+                      <button th:onclick="|closeModal('modal-${order.id}')|"
+                              class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
+                        Close
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+
+              </td>
+            </tr>
+            <!-- More rows... -->
+            </tbody>
+          </table>
+        </div>
+
+        <div class="flex justify-center mt-4">
+          <nav class="flex items-center space-x-2">
+            <a th:if="${orderPage.number > 0}"
+               th:href="@{'/admin/orders?p=' + ${orderPage.number - 1}}"
+               class="px-4 py-2 rounded-lg bg-blue-500 text-white">
+              Previous
+            </a>
+
+            <!-- First page link -->
+            <a th:if="${orderPage.number > 2}"
+               th:href="@{/admin/orders?p=0}"
+               class="px-4 py-2 rounded-lg bg-blue-500 text-white"
+               th:classappend="${orderPage.number == 0} ? 'bg-blue-700' : ''">1</a>
+            <span th:if="${orderPage.number > 2}" class="px-4 py-2">...</span>
+
+            <!-- Dynamic page links -->
+            <span th:each="i : ${#numbers.sequence(
+            orderPage.number > 2 ? orderPage.number - 2 : 0,
+            orderPage.number < orderPage.totalPages - 3 ? orderPage.number + 2 : orderPage.totalPages - 1
+        )}">
+            <a th:href="@{'/admin/orders?p=' + ${i}}"
+               class="px-4 py-2 rounded-lg bg-blue-500 text-white"
+               th:classappend="${orderPage.number == i} ? 'bg-blue-700' : ''"
+               th:text="${i + 1}">1</a>
+        </span>
+
+            <!-- Last page link -->
+            <span th:if="${orderPage.number < orderPage.totalPages - 3}" class="px-4 py-2">...</span>
+            <a th:if="${orderPage.number < orderPage.totalPages - 3}"
+               th:href="@{'/admin/orders?p=' + ${orderPage.totalPages - 1}}"
+               class="px-4 py-2 rounded-lg bg-blue-500 text-white"
+               th:classappend="${orderPage.number == orderPage.totalPages - 1} ? 'bg-blue-700' : ''"
+               th:text="${orderPage.totalPages}">4</a>
+
+            <a th:if="${orderPage.number < orderPage.totalPages - 1}"
+               th:href="@{'/admin/orders?p=' + ${orderPage.number + 1}}"
+               class="px-4 py-2 rounded-lg bg-blue-500 text-white">
+              Next
+            </a>
+          </nav>
+        </div>
+
+
+
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+  function openModal(modalId) {
+    document.getElementById(modalId).classList.remove('hidden');
+  }
+
+  function closeModal(modalId) {
+    document.getElementById(modalId).classList.add('hidden');
+  }
+</script>
+</body>
+</html>

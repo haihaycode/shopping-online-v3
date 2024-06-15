@@ -7,35 +7,6 @@
 </head>
 <body layout:fragment="content">
 <div class="overflow-x-auto">
-
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
-        <div class="bg-slate-50 p-5 m-2 rounded-md flex justify-between items-center shadow">
-            <div>
-                <h3 class="font-bold">Total Products</h3>
-                <p class="text-gray-500" th:text="${totalProducts}">100</p>
-            </div>
-            <i class="fas fa-tachometer-average  rounded-md"></i>
-        </div>
-
-        <div class="bg-slate-50 p-5 m-2 flex justify-between items-center shadow">
-            <div>
-                <h3 class="font-bold">Total Active Products</h3>
-                <p class="text-gray-500" th:text="${totalProductActive}">65</p>
-            </div>
-            <i class="fas fa-tachometer-average  rounded-md"></i>
-        </div>
-
-        <div class="bg-slate-50 p-5 m-2 flex justify-between items-center shadow">
-            <div>
-                <h3 class="font-bold">Total In Active Products</h3>
-                <p class="text-gray-500" th:text="${totalProducts} - ${totalProductActive}">30</p>
-            </div>
-            <i class="fas fa-tachometer-average rounded-md"></i>
-        </div>
-
-
-    </div>
-
     <div class="">
         <form id="filterForm" th:action="@{/admin/product}" method="GET"  class="flex space-x-2 my-2">
             <input type="hidden" th:value="${param.p}" name="p">
@@ -72,8 +43,6 @@
             </div>
         </form>
     </div>
-
-
     <table class="min-w-full bg-white shadow-md rounded mb-4">
         <thead>
         <tr class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
@@ -120,7 +89,7 @@
 
         </tbody>
     </table>
-        <div class="flex justify-center" th:if="${page.totalElements > 0}">
+    <div class="flex justify-center" th:if="${page.totalElements > 0}">
             <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
                 <a th:if="${page.number > 0}" th:href="@{/admin/product(p=${page.number - 1},keywords=${param.keywords},orderByPrice=${param.orderByPrice},active=${param.active})}"
                    class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">Previous</a>

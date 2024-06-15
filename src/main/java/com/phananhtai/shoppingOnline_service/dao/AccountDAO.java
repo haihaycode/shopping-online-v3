@@ -9,10 +9,12 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface AccountDAO extends JpaRepository<Account, String> {
   Account findByUsername(String UserName);
   Account findByUsernameAndActivated(String UserName,boolean active);
+  Optional<Account> findByAccessToken(String token);
   List<Account> findAll();
   @Query("SELECT a FROM Account a " +
           "WHERE (:ac is null or a.activated = :ac) " +

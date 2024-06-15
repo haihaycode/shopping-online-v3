@@ -24,6 +24,8 @@ public class Account implements Serializable {
     String photo;
     boolean activated;
     boolean admin;
+    @Column(columnDefinition = "text")
+    String accessToken;
     @OneToMany(mappedBy = "account")
     List<Order> orders;
 

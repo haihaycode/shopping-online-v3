@@ -1,10 +1,15 @@
 package com.phananhtai.shoppingOnline_service.utils;
 
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Base64;
 import java.util.Date;
 import java.util.Random;
+import java.util.UUID;
 
 public class OrderUtils {
     // Hàm tạo chuỗi mã đơn hàng
@@ -57,9 +62,31 @@ public class OrderUtils {
     }
 
 
-    // Hàm main để kiểm tra
-    public static void main(String[] args) {
-        String orderCode = generateOrderCode();
-        System.out.println("Generated Order Code: " + orderCode);
+    public static String generateToken(String input) {
+        // Lấy thời gian hiện tại
+        LocalDateTime now = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss");
+        String formattedNow = now.format(formatter);
+
+        // Tạo UUID ngẫu nhiên
+        String randomUUID = UUID.randomUUID().toString();
+
+        // Kết hợp chuỗi đầu vào, thời gian hiện tại và UUID
+        String combinedString = input + "-" + formattedNow + "-" + randomUUID;
+
+        // Mã hóa chuỗi kết hợp bằng SHA-256
+        String token = sha256(combinedString);
+
+        return token;
+    }
+
+    private static String sha256(String base) {
+        try {
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            byte[] hash = digest.digest(base.getBytes(StandardCharsets.UTF_8));
+            return Base64.getUrlEncoder().withoutPadding().encodeToString(hash);
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

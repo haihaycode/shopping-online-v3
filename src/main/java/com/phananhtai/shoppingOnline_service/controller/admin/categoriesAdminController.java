@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.Optional;
 
@@ -67,14 +68,19 @@ public class categoriesAdminController {
     @GetMapping("/admin/categories/edit/{id}")
     public String showUpdateForm(@PathVariable("id") String id, Model model) {
         loadCategoryPage(model);
-        Category category = categoryDAO.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid category Id:" + id));
-        model.addAttribute("category", category);
+        Optional<Category> category = categoryDAO.findById(id);
+        if (category.isPresent()){
+            model.addAttribute("category", category.get());
+        }else{
+            model.addAttribute("danger"," id not found");
+            model.addAttribute("category", new Category());
+        }
         return "admin/category/category";
     }
 
     @PostMapping("/admin/categories")
     public String saveCategory(@Valid @ModelAttribute("category") Category category,
-                               BindingResult bindingResult, Model model, @RequestParam("status") String status) {
+                               BindingResult bindingResult, Model model, @RequestParam("status") String status,RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) {
             loadCategoryPage(model);
             return "admin/category/category"; // Nếu có lỗi, quay lại form nhập liệu
@@ -82,15 +88,22 @@ public class categoriesAdminController {
         if ("add".equals(status)) {
             category.setId(OrderUtils.generateUniqueId());
         }
+        redirectAttributes.addFlashAttribute("success", "Cập nhật thành công");
         categoryDAO.save(category);
         return "redirect:/admin/categories"; // Chuyển hướng sau khi thêm thành công
     }
 
     @GetMapping("/admin/categories/active/{id}")
-    public String activeProduct(@PathVariable("id") String id, @RequestParam("active") Boolean active ) {
+    public String activeProduct(@PathVariable("id") String id, @RequestParam("active") Boolean active, RedirectAttributes redirectAttributes) {
         Category category = categoryDAO.getReferenceById(id);
-        category.setActive(active);
-        categoryDAO.save(category);
+        if(category==null){
+            redirectAttributes.addFlashAttribute("danger", "Không tìm thấy id :"+id);
+        }else{
+            category.setActive(active);
+            categoryDAO.save(category);
+            redirectAttributes.addFlashAttribute("success", "Cập nhật thành công");
+        }
+
         return "redirect:/admin/categories?active="+active;
     }
 }

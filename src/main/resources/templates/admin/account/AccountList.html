@@ -29,6 +29,11 @@
         <span th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="text-red-500 text-sm"></span>
       </div>
       <div>
+        <label for="confirmPassword" class="block text-sm font-medium text-gray-700">password</label>
+        <input id="confirmPassword" th:field="*{confirmPassword}" rows="3" class="p-3 mt-1 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md" placeholder="Enter confirmPassword">
+        <span th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}" class="text-red-500 text-sm"></span>
+      </div>
+      <div>
         <label for="active" class="block text-sm font-medium text-gray-700">Active</label>
         <select id="active" th:field="*{activated}" class="p-3 mt-1 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
           <option value="true">Active</option>
@@ -51,7 +56,7 @@
 
   <!-- Danh sách bên phải -->
   <div class="w-3/4 p-4">
-    <!--form add-->
+    <!--form filter-->
     <div class="mb-4">
       <form action="#" th:action="@{/admin/account}" method="get" class="flex space-x-4">
         <input type="hidden" name="p" value="0">
@@ -105,20 +110,41 @@
       <tr>
         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Username</th>
         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fullname</th>
-        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Password</th>
         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Active</th>
         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Role</th>
+        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">OPERATION</th>
       </tr>
       </thead>
       <tbody class="bg-white divide-y divide-gray-200">
       <tr th:each="account : ${accountsPage.content}">
         <td class="px-6 py-4 whitespace-nowrap" th:text="${account.username}"></td>
         <td class="px-6 py-4 whitespace-nowrap" th:text="${account.fullname}"></td>
-        <td class="px-6 py-4 whitespace-nowrap" th:text="${account.password}"></td>
         <td class="px-6 py-4 whitespace-nowrap" th:text="${account.email}"></td>
-        <td class="px-6 py-4 whitespace-nowrap" th:text="${account.activated}"></td>
-        <td class="px-6 py-4 whitespace-nowrap" th:text="${account.admin}"></td>
+        <td class="px-6 py-4 whitespace-nowrap" >
+          <form th:action="@{/admin/account/active/{id}(id=${account.username})}" method="get">
+            <label class="inline-flex items-center cursor-pointer">
+              <input type="checkbox" class="accent-pink-500" th:checked="${account.activated}" onchange="this.form.submit()">
+              <input type="hidden" name="active" th:value="${!account.activated}">
+            </label>
+          </form>
+        </td>
+        <td class="px-6 py-4 whitespace-nowrap">
+          <span th:if="${account.admin}" class="bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300">Admin</span>
+          <span th:if="${!account.admin}" class="bg-gray-100 text-gray-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-300">User</span>
+        </td>
+
+        <td class="px-6 py-4 whitespace-nowrap" >
+          <form action="#" th:action="@{'/admin/account/edit/' + ${account.username}}" method="get" class="inline">
+            <input type="hidden" name="keywords" th:value="${keywords}">
+            <input type="hidden" name="active" th:value="${active}">
+            <input type="hidden" name="orderBy" th:value="${orderBy}">
+            <input type="hidden" name="p" th:value="${accountsPage.number}">
+            <button type="submit" class="bg-blue-500 px-4 py-2 rounded text-sm">
+              <i class="fad fa-edit text-white"></i>
+            </button>
+          </form>
+        </td>
       </tr>
       </tbody>
     </table>

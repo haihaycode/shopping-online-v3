@@ -35,6 +35,9 @@ public class UserDTO {
 
     private boolean admin;
 
+    private Integer phone;
+    private String address;
+
     @NotBlank(message = "{NotBlank.userDTO.confirmPassword}")
     private String confirmPassword;
 
