@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to Our Service</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f3f4f6;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 0.5rem;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .header {
+            text-align: center;
+            padding-bottom: 20px;
+        }
+        .header h2 {
+            font-size: 1.875rem; /* text-2xl */
+            font-weight: 700; /* font-bold */
+            color: #1f2937; /* text-gray-900 */
+        }
+        .content {
+            color: #4b5563; /* text-gray-700 */
+        }
+        .content p {
+            margin-bottom: 1rem; /* mb-4 */
+        }
+        .footer {
+            text-align: center;
+            padding-top: 20px;
+            font-size: 0.875rem; /* text-sm */
+            color: #9ca3af; /* text-gray-400 */
+        }
+        .button {
+            display: inline-block;
+            background-color: #3b82f6; /* bg-blue-500 */
+            color: #ffffff; /* text-white */
+            padding: 0.75rem 1.5rem; /* py-3 px-6 */
+            border-radius: 0.375rem; /* rounded-md */
+            text-decoration: none;
+            font-weight: 600; /* font-semibold */
+        }
+        .button:hover {
+            background-color: #2563eb; /* bg-blue-600 */
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h2>Welcome to Our Service !</h2>
+    </div>
+    <div class="content">
+        <p>Dear {{username}},</p>
+        <p>Thank you for registering with us. We are excited to have you on board!</p>
+        <p>If you have any questions, feel free to contact our support team.</p>
+        <a href="https://example.com" class="button">Visit our website</a>
+        <p>Best regards,</p>
+        <p>The Service Team</p>
+    </div>
+    <div class="footer">
+        <p>&copy; 2024 Our Service. All rights reserved.</p>
+    </div>
+</div>
+</body>
+</html>

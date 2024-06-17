@@ -13,6 +13,7 @@ import java.util.Optional;
 
 public interface AccountDAO extends JpaRepository<Account, String> {
   Account findByUsername(String UserName);
+  Optional<Account> findByEmailAndActivated(String email, boolean active);
   Account findByUsernameAndActivated(String UserName,boolean active);
   Optional<Account> findByAccessToken(String token);
   List<Account> findAll();

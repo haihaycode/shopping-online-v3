@@ -7,10 +7,12 @@
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
 <body   layout:fragment="content1">
-<div class="max-w-4xl mx-auto bg-white p-8 rounded-lg shadow-lg my-10 ">
-    <h2 class="text-3xl font-bold mb-4">Personal Information</h2>
+<div class=" p-8 rounded-lg shadow-lg my-10">
+    <h2 class="text-3xl font-bold mb-4 px-4">Cập nhật thông tin cá nhân</h2>
 
     <div class=" p-6 rounded-lg ">
+
+
         <form th:action="@{/account}" th:object="${user}" method="post" >
             <div class="mb-4">
                 <label class="block text-gray-700 text-sm font-bold mb-2" for="username">Username</label>
@@ -46,7 +48,7 @@
             </div>
         </form>
 
-        <h2 class="text-sm text-end font-bold mb-4"><a th:href="@{/account/updateAvatar}">Cập nhật ảnh đại diện</a></h2>
+        <h2 class="text-sm text-end font-bold text-blue-600 p-3"><a th:href="@{/account/updateAvatar}">Cập nhật ảnh đại diện</a></h2>
 
     </div>
 

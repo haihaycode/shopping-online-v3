@@ -28,4 +28,21 @@ public interface OrderDAO extends JpaRepository<Order, Long> {
             @Param("endDate") Date endDate,
             Pageable pageable
     );
+    @Query("SELECT o FROM Order o " +
+            "JOIN o.account a " + // Assuming Order has a relationship with Account
+            "WHERE (:idOrderStatus IS NULL OR o.orderStatus.id = :idOrderStatus) " +
+            "AND (LOWER(o.address) LIKE %:keywords% " +
+            "OR LOWER(o.fullName) LIKE %:keywords% " +
+            "OR LOWER(o.oderCode) LIKE %:keywords%) " +
+            "AND (:startDate IS NULL OR :endDate IS NULL OR o.createDate BETWEEN :startDate AND :endDate) " +
+            "AND (:username IS NULL OR LOWER(a.username) = LOWER(:username))")
+    Page<Order> findByOrderStatusAndKeywordsContainingAndCreateDateBetweenAndUsername(
+            @Param("idOrderStatus") Long idOrderStatus,
+            @Param("keywords") String keywords,
+            @Param("startDate") Date startDate,
+            @Param("endDate") Date endDate,
+            @Param("username") String username,
+            Pageable pageable
+    );
+
 }

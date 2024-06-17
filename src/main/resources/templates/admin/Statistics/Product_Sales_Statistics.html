@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en"xmlns:th="http://wwww.thymeleaf.org" xmlns:layout=""
+      layout:decorate="~{layout/adminLayout}" xmlns:sec>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Sales Statistics</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body layout:fragment="content">
+
+
+<form action="#" th:action="@{/admin/product-sales}" method="get" class="flex space-x-4">
+    <input type="hidden" name="p" th:value="${p}">
+
+    <div class=" flex-1 ">
+        <label for="before" class="block text-sm font-medium text-gray-700">Before Date:</label>
+        <input type="date" id="before" name="before"  th:value="${start}" class="p-3 mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
+    </div>
+    <div class=" flex-1">
+        <label for="after" class="block text-sm font-medium text-gray-700">After Date:</label>
+        <input type="date" id="after" name="after"  th:value="${end}" class=" p-3  mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
+    </div>
+    <div class="flex-1 self-end">
+        <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-6">Filter</button>
+    </div>
+</form>
+
+<div class="mt-4 flex justify-content-end">
+    <span th:text="'Page ' + (${productStatistics.number} + 1) + ' of ' + ${productStatistics.totalPages}"></span>
+</div>
+<div class="container mx-auto p-4">
+    <h1 class="text-2xl font-bold mb-4">Product Sales Statistics</h1>
+    <table class="min-w-full bg-white">
+        <thead>
+        <tr>
+            <th class="py-2">Product ID</th>
+            <th class="py-2">Product Name</th>
+            <th class="py-2">Product Price Stock</th>
+            <th class="py-2">Total Quantity</th>
+            <th class="py-2">Total Price</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="stat : ${productStatistics.content}">
+            <td class="border px-4 py-2" th:text="${stat.productId}"></td>
+            <td class="border px-4 py-2" th:text="${stat.productName}"></td>
+            <td class="border px-4 py-2" th:text="${stat.productpriceStock}"></td>
+            <td class="border px-4 py-2" th:text="${stat.totalQuantity}"></td>
+            <td class="border px-4 py-2" th:text="${stat.totalPrice}"></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div class="mt-4 flex space-x-2">
+        <div th:if="${productStatistics.hasPrevious}">
+            <a class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" th:href="@{/admin/product-sales(startDate=${startDate}, endDate=${endDate}, p=${productStatistics.number - 1})}">Previous</a>
+        </div>
+        <div th:if="${productStatistics.hasNext}">
+            <a class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" th:href="@{/admin/product-sales(startDate=${startDate}, endDate=${endDate}, p=${productStatistics.number + 1})}">Next</a>
+        </div>
+    </div>
+</div>
+</body>
+</html>

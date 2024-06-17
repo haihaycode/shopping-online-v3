@@ -1,5 +1,6 @@
 package com.phananhtai.shoppingOnline_service.controller.auth;
 
+import com.phananhtai.shoppingOnline_service.service.CookieService;
 import com.phananhtai.shoppingOnline_service.service.SessionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -15,10 +16,13 @@ public class LogoutController {
     @Autowired
     SessionService sessionService;
     @Autowired
+    CookieService cookieService;
+    @Autowired
     MessageSource messageSource;
     @GetMapping("/logout")
     public String logout(Model model, RedirectAttributes redirectAttributes, Locale locale){
         redirectAttributes.addFlashAttribute("success", messageSource.getMessage("logout.success", null, locale));
+        cookieService.remove("token_access");
         sessionService.remove("user");
         return "redirect:/?logout";
     }

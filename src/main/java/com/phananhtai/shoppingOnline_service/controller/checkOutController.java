@@ -87,10 +87,11 @@ public class checkOutController {
             List<OrderDetail> orderDetails = createOrderDetails(order, new ArrayList<>(cart.getProducts()));
             order.setOrderDetails(orderDetails);
 
-            Order orderReturn = orderDAO.save(order);
+
 
 
             if(paymentMethod.equals("cash")) {
+                Order orderReturn = orderDAO.save(order);
                 cart.clear();
                 model.addAttribute("success", "Đặt hàng thành công");
                 model.addAttribute("order",orderReturn);
@@ -164,6 +165,7 @@ public class checkOutController {
             // Lấy thông tin đơn hàng từ session
             Order order = (Order) session.get("pendingOrder");
             List<OrderDetail> orderDetails = (List<OrderDetail>) session.get("orderDetails");
+
 
             // Lưu đơn hàng vào cơ sở dữ liệu
             order.setOrderStatus(oderStatusDAO.findById(13L).orElse(null)); // Cập nhật trạng thái đơn hàng thành đã thanh toán

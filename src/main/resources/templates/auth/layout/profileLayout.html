@@ -8,16 +8,16 @@
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
 <body layout:fragment="content">
-<div class="flex min-h-screen">
+<div class="flex full-h-screen"  >
     <!-- Sidebar -->
-    <div class="w-1/4 bg-gray-800 text-white">
+    <div class="w-1/4  text-dark-500">
         <div class="p-6">
             <h1 class="text-2xl font-bold">Dashboard</h1>
             <ul class="mt-6">
-                <li class="mt-3"><a th:href="@{/account}" class="text-gray-300 hover:text-white">Thông tin cá nhân</a></li>
-                <li class="mt-3"><a th:href="@{/account/change-password}" class="text-gray-300 hover:text-white">Đổi mật khẩu</a></li>
-                <li class="mt-3"><a th:href="@{/account}" class="text-gray-300 hover:text-white">Settings</a></li>
-                <li class="mt-3"><a th:href="@{/account}" class="text-gray-300 hover:text-white">Logout</a></li>
+                <li class="mt-3"><a th:href="@{/account}" class="text-dark-600 hover:text-blue-600">Thông tin cá nhân</a></li>
+                <li class="mt-3"><a th:href="@{/account/change-password}" class="text-dark-600 hover:text-blue-600">Đổi mật khẩu</a></li>
+                <li class="mt-3"><a th:href="@{/account/order}" class="text-dark-600 hover:text-blue-600">Đơn hàng</a></li>
+                <li class="mt-3"><a th:href="@{/logout}" class="text-dark-600 hover:text-blue-600">Logout</a></li>
             </ul>
         </div>
     </div>

@@ -4,6 +4,7 @@ import com.phananhtai.shoppingOnline_service.dao.AccountDAO;
 import com.phananhtai.shoppingOnline_service.dto.UserDTO;
 
 import com.phananhtai.shoppingOnline_service.entity.Account;
+import com.phananhtai.shoppingOnline_service.service.MailerService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -14,10 +15,15 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.nio.file.Files;
+import java.nio.file.Paths;
+
 @Controller
 public class RegisterController {
     @Autowired
     AccountDAO accountDAO;
+    @Autowired
+    MailerService mailerService;
 
     @GetMapping("/register")
     public String showRegistration(Model model){
@@ -61,6 +67,13 @@ public class RegisterController {
 
         // Thêm thông báo thành công và chuyển hướng
         redirectAttributes.addFlashAttribute("success", "register.success");
+        try {
+            String htmlTemplate = new String(Files.readAllBytes(Paths.get("src/main/resources/templates/welcome.html")));
+            String htmlContent = htmlTemplate.replace("{{username}}", newAccount.getUsername());
+            mailerService.send(newAccount.getEmail(), "Welcome to Our Service Shopping Online!", htmlContent);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return "redirect:/login?success=Registration successful!";
     }
 

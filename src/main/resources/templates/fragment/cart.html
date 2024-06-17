@@ -104,7 +104,7 @@
     function addToCart(id) {
         axios.get(`/api/v1/cart/add/${id}`)
             .then(response => {
-                console.log(response.data);
+                console.log(response);
                 getAllCartItems()
                 showMessage("success", response.data.message, "success");
             })
@@ -140,7 +140,7 @@
     function getAllCartItems() {
         axios.get('/api/v1/cart')
             .then(response => {
-                console.log(response.data);
+                console.log(response);
                 updateCartUI(response.data);
                 updateCount();
 

@@ -1,14 +1,25 @@
 package com.phananhtai.shoppingOnline_service.controller.auth;
 
 import com.phananhtai.shoppingOnline_service.dao.AccountDAO;
+import com.phananhtai.shoppingOnline_service.dao.OderStatusDAO;
+import com.phananhtai.shoppingOnline_service.dao.OrderDAO;
 import com.phananhtai.shoppingOnline_service.dto.PasswordDTO;
 import com.phananhtai.shoppingOnline_service.dto.ProductDTO;
 import com.phananhtai.shoppingOnline_service.dto.UserDTO;
 import com.phananhtai.shoppingOnline_service.dto.profileDTO;
 import com.phananhtai.shoppingOnline_service.entity.Account;
+import com.phananhtai.shoppingOnline_service.entity.Order;
+import com.phananhtai.shoppingOnline_service.entity.OrderStatus;
+import com.phananhtai.shoppingOnline_service.service.ImageStorageService;
 import com.phananhtai.shoppingOnline_service.service.SessionService;
+import com.phananhtai.shoppingOnline_service.utils.OrderUtils;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -16,7 +27,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.io.IOException;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
 
 @Controller
 public class profileController {
@@ -24,6 +41,12 @@ public class profileController {
     SessionService sessionService;
     @Autowired
     AccountDAO accountDAO;
+    @Autowired
+    ImageStorageService imageStorageService;
+    @Autowired
+    OrderDAO orderDAO;
+    @Autowired
+    OderStatusDAO oderStatusDAO;
     @GetMapping("/account")
     public String showProfile(Model model) {
         Account user = sessionService.get("user");
@@ -88,10 +111,70 @@ public class profileController {
     }
     @PostMapping("/account/updateAvatar")
     public String UpdateAvatar(Model model,
-                               @RequestParam("username") String username) {
+                               @RequestParam("username") String username,
+                               @RequestParam("avatar") MultipartFile avatar) {
         Account account= accountDAO.findByUsernameAndActivated(username,true);
+        if (account.getPhoto()==null) {
+            String image = OrderUtils.generateImage();
+            account.setPhoto(image+".png");
+            try {
+                imageStorageService.storeImageProfile(avatar, image);
+            } catch (IOException e) {
+                System.err.println("Error saving image: " + e.getMessage());
+                throw new RuntimeException("Error saving image", e);
+            }
+        }else{
+            try {
+                imageStorageService.deleteImageProfile(account.getPhoto());
+                String image = OrderUtils.generateImage();
+                account.setPhoto(image+".png");
+                imageStorageService.storeImageProfile(avatar, image);
+            } catch (IOException e) {
+                System.err.println("Error saving image: " + e.getMessage());
+                throw new RuntimeException("Error saving image", e);
+            }
+        }
+        accountDAO.save(account);
+
+        return "redirect:/account/updateAvatar";
+    }
+    @ModelAttribute("OrderStatus")
+    public List<OrderStatus> orderStatusList(){
+        return oderStatusDAO.findAll();
+    }
+    @GetMapping("/account/order")
+    public String showOrder(
+            @RequestParam("keywords") Optional<String> keywords,
+            @RequestParam("before") @DateTimeFormat(pattern = "yyyy-MM-dd") Optional<Date> before,
+            @RequestParam("after") @DateTimeFormat(pattern = "yyyy-MM-dd") Optional<Date> after,
+            @RequestParam("idOrderStatus") Optional<Long> idOrderStatus,
+            @RequestParam("p") Optional<Integer> page,
+            @RequestParam("orderBy") Optional<String> orderBy,
+            Model model
+    ) {
+        Account account= sessionService.get("user");
+        String kw = keywords.orElse("");
+        int currentPage = page.orElse(0);
+        int pageSize = 10;
+        String orderByField = orderBy.orElse("id");
+        Long orderStatus=idOrderStatus.orElse(1L);
+
+        Date beforeDate = before.orElse(new Date(Long.MIN_VALUE));
+        Date afterDate = after.orElse(new Date());
 
 
-        return "auth/updateAvatar";
+        Pageable pageable = PageRequest.of(currentPage, pageSize, Sort.by(orderByField).ascending());
+        Page<Order> orderPage = orderDAO.findByOrderStatusAndKeywordsContainingAndCreateDateBetweenAndUsername(orderStatus, kw,beforeDate, afterDate,account.getUsername(), pageable);
+
+        model.addAttribute("orderPage", orderPage);
+        model.addAttribute("keywords", kw);
+        model.addAttribute("p", currentPage);
+        model.addAttribute("idOrderStatus", idOrderStatus);
+        model.addAttribute("orderBy", orderByField);
+        model.addAttribute("start", beforeDate);
+        model.addAttribute("end", afterDate);
+
+
+        return "auth/order";
     }
 }

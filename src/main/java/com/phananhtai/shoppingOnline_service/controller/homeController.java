@@ -2,19 +2,24 @@ package com.phananhtai.shoppingOnline_service.controller;
 
 
 import com.phananhtai.shoppingOnline_service.dao.AccountDAO;
+import com.phananhtai.shoppingOnline_service.dao.OrderDetailDAO;
 import com.phananhtai.shoppingOnline_service.dao.ProductDAO;
+import com.phananhtai.shoppingOnline_service.dto.ProductStatisticsDTO;
 import com.phananhtai.shoppingOnline_service.entity.Product;
 import com.phananhtai.shoppingOnline_service.service.SessionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Date;
 import java.util.Optional;
 
 @Controller
@@ -25,6 +30,9 @@ public class homeController {
     AccountDAO accountDAO;
     @Autowired
     SessionService session;
+    @Autowired
+    OrderDetailDAO orderDetailDAO;
+
 
     @GetMapping("/")  public String showIndex(Model model,
                                                @RequestParam("p") Optional<Integer> p) {
@@ -33,6 +41,14 @@ public class homeController {
         Page<Product> page = productDAO.getAllByActiveOrderByIdAsc(true,pageable);
         model.addAttribute("page", page);
         return "index";
+    }
+
+    @ModelAttribute("top10")
+
+    public Page<ProductStatisticsDTO> top10ProductsBySalesQuantity(){
+        Pageable pageable = PageRequest.of(1, 8);
+        Page<ProductStatisticsDTO> top10ProductsBySalesQuantity =orderDetailDAO.findTop10ProductsBySalesQuantity(new Date(Long.MIN_VALUE),new Date(),pageable);
+        return top10ProductsBySalesQuantity;
     }
 
 

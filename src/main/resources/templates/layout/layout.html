@@ -52,11 +52,16 @@
                             <i class="fad fa-user-plus text-yellow-500"></i><span th:text="#{register}"></span>
                         </a>
 
+
+
                         <a th:href="@{/account}" class="block px-4 py-2 text-gray-800 hover:bg-gray-100" th:if="${session.user}">
                             <i class="fad fa-user-circle text-yellow-500"></i> <span th:text="#{Account}"></span>
                         </a>
                         <a th:href="@{/admin}" class="block px-4 py-2 text-gray-800 hover:bg-gray-100" th:if="${session.user != null and session.user.admin}">
                             <i class="fad fa-users-crown text-yellow-500"></i>  <span th:text="#{Admin}"></span>
+                        </a>
+                        <a th:href="@{/forgot-Password}"  class="block px-4 py-2 text-gray-800 hover:bg-gray-100" >
+                            <i class="fad fa-lock text-yellow-500"></i><span > Forgot Password ?</span>
                         </a>
                         <a th:href="@{/logout}" class="block px-4 py-2 text-gray-800 hover:bg-gray-100" th:if="${session.user}">
                             <i class="fad fa-sign-out text-yellow-500"></i> <span th:text="#{logout}"></span>
@@ -95,7 +100,7 @@
 <!--content-->
 
 <!-- Footer -->
-<footer class="bg-white shadow mt-8">
+<footer class="bg-white shadow ">
     <div class="container mx-auto px-6 py-4">
         <div class="flex items-center justify-between">
             <div class="text-gray-700">© 2024 Shop. All rights reserved.</div>
