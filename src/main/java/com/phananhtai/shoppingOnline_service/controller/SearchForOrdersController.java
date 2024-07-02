@@ -19,7 +19,8 @@ public class SearchForOrdersController {
                               @RequestParam(name = "phone", required = false) Integer phone,
                               Model model) {
         if (orderCode == null || orderCode.isEmpty() || phone == null || phone == 0) {
-            model.addAttribute("error", "Vui lòng nhập mã đơn hàng và số điện thoại để tìm kiếm.");
+            model.addAttribute("error", "\n" +
+                    "Please enter order code and phone number to search..");
             return "SearchForOrders";
         }
 
@@ -27,7 +28,8 @@ public class SearchForOrdersController {
         if (orderSearch.isPresent()) {
             model.addAttribute("order", orderSearch.get());
         } else {
-            model.addAttribute("error", "Không tìm thấy đơn hàng nào với mã " + orderCode + " và số điện thoại " + phone);
+            model.addAttribute("error", "\n" +
+                    "No orders found with code " + orderCode + " and phone number  " + phone);
         }
         return "SearchForOrders";
     }

@@ -3,12 +3,12 @@
       layout:decorate="~{auth\layout\profileLayout}" xmlns:sec>
 <head>
     <meta charset="UTF-8">
-    <title>Quản Lý Thông Tin Cá Nhân</title>
+    <title>Update personal information</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
 <body   layout:fragment="content1">
 <div class=" p-8 rounded-lg shadow-lg my-10">
-    <h2 class="text-3xl font-bold mb-4 px-4">Cập nhật thông tin cá nhân</h2>
+    <h2 class="text-3xl text-center font-bold mb-4 px-4">Update personal information <i class="fas fa-badge-check ml-1 text-blue-600"></i></h2>
 
     <div class=" p-6 rounded-lg ">
 
@@ -34,23 +34,25 @@
             <div class="mb-4">
                 <label class="block text-gray-700 text-sm font-bold mb-2" for="phone">Phone</label>
                 <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                       type="text" id="phone" th:field="*{phone}">
+                       type="number" id="phone" th:field="*{phone}">
             </div>
             <div class="mb-4">
                 <label class="block text-gray-700 text-sm font-bold mb-2" for="address">Address</label>
-                <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                       type="text" id="address" th:field="*{address}">
+                <textarea class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                          type="text" id="address" th:field="*{address}"></textarea>
             </div>
 
             <div class="flex items-center justify-between">
                 <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                        type="submit">Cập nhật</button>
+                        type="submit" th:text="#{btn.update}"></button>
             </div>
         </form>
 
-        <h2 class="text-sm text-end font-bold text-blue-600 p-3"><a th:href="@{/account/updateAvatar}">Cập nhật ảnh đại diện</a></h2>
 
     </div>
+
+    <h2 class="text-sm text-end font-bold text-blue-600 p-3"><a th:href="@{/account/updateAvatar}">Update profile picture <i class="fad fa-camera-retro"></i> </a></h2>
+
 
 
 </div>

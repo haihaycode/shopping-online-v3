@@ -15,14 +15,14 @@ import java.util.Locale;
 public class WebConfig implements WebMvcConfigurer {
 
     @Bean
-    public LocaleResolver localeResolver() {
+    public LocaleResolver localeResolver() {//xác định ngôn ngữ hiện tại
         SessionLocaleResolver slr = new SessionLocaleResolver();
         slr.setDefaultLocale(Locale.ENGLISH);
         return slr;
     }
 
     @Bean
-    public LocaleChangeInterceptor localeChangeInterceptor() {
+    public LocaleChangeInterceptor localeChangeInterceptor() {//thay đổi ngôn ngữ dựa trên paramm
         LocaleChangeInterceptor lci = new LocaleChangeInterceptor();
         lci.setParamName("lang");
         return lci;
@@ -30,7 +30,7 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(localeChangeInterceptor());
+        registry.addInterceptor(localeChangeInterceptor());//đăng ký và áp dụng cho mỗi request
 
     }
 

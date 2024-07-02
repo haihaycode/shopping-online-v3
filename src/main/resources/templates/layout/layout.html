@@ -20,7 +20,7 @@
             <div class="flex space-x-4 items-center justify-between">
                 <a th:href="@{/}" class="text-gray-800 hover:text-gray-600" th:text="#{home}">Home</a>
                 <a th:href="@{/about}" class="text-gray-800 hover:text-gray-600" th:text="#{about}">About</a>
-                <a th:href="@{/product}" class="text-gray-800 hover:text-gray-600">Products</a>
+                <a th:href="@{/product}" class="text-gray-800 hover:text-gray-600" th:text="#{products}">Products</a>
 
 
 
@@ -55,13 +55,13 @@
 
 
                         <a th:href="@{/account}" class="block px-4 py-2 text-gray-800 hover:bg-gray-100" th:if="${session.user}">
-                            <i class="fad fa-user-circle text-yellow-500"></i> <span th:text="#{Account}"></span>
+                            <i class="fad fa-user-circle text-yellow-500"></i>  <span th:text="#{Account}"></span>
                         </a>
                         <a th:href="@{/admin}" class="block px-4 py-2 text-gray-800 hover:bg-gray-100" th:if="${session.user != null and session.user.admin}">
                             <i class="fad fa-users-crown text-yellow-500"></i>  <span th:text="#{Admin}"></span>
                         </a>
                         <a th:href="@{/forgot-Password}"  class="block px-4 py-2 text-gray-800 hover:bg-gray-100" >
-                            <i class="fad fa-lock text-yellow-500"></i><span > Forgot Password ?</span>
+                            <i class="fad fa-lock text-yellow-500"></i>  <span th:text="#{forgot.pass}"> Forgot Password ?</span>
                         </a>
                         <a th:href="@{/logout}" class="block px-4 py-2 text-gray-800 hover:bg-gray-100" th:if="${session.user}">
                             <i class="fad fa-sign-out text-yellow-500"></i> <span th:text="#{logout}"></span>

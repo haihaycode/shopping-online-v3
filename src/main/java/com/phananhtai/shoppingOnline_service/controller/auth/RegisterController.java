@@ -43,7 +43,7 @@ public class RegisterController {
         // Kiểm tra sự tồn tại của tài khoản
         Account existingAccount = accountDAO.findByUsername(user.getUsername().trim());
         if (existingAccount != null) {
-            result.rejectValue("username", "register.username", "register.username.exists");
+            result.rejectValue("username", "register.username", "Username already exists!");
             return "auth/register";
         }
 

@@ -93,7 +93,7 @@ public class checkOutController {
             if(paymentMethod.equals("cash")) {
                 Order orderReturn = orderDAO.save(order);
                 cart.clear();
-                model.addAttribute("success", "Đặt hàng thành công");
+                model.addAttribute("success", "Order Success !");
                 model.addAttribute("order",orderReturn);
                 return "oderSuccessFul";
             } else if(paymentMethod.equals("bank")) {
@@ -110,7 +110,8 @@ public class checkOutController {
                 return "redirect:" + vnpayUrl;
             }
         } else {
-            redirectAttributes.addFlashAttribute("error", "Không có sản phẩm nào trong giỏ hàng");
+            redirectAttributes.addFlashAttribute("error", "\n" +
+                    "There are no products in the cart ! Shopping now ?");
         }
 
         return "redirect:/checkout";
@@ -179,7 +180,7 @@ public class checkOutController {
             session.remove("orderDetails");
 
             cart.clear();
-            model.addAttribute("success", "Thanh toán thành công ");
+            model.addAttribute("success", "Payment Success  ");
             model.addAttribute("order",orderReturn);
             return "oderSuccessFul";
         } else {

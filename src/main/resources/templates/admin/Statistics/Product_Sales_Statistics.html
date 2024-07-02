@@ -26,13 +26,13 @@
     </div>
 </form>
 
-<div class="mt-4 flex justify-content-end">
+<div class="mt-4 text-right mr-6">
     <span th:text="'Page ' + (${productStatistics.number} + 1) + ' of ' + ${productStatistics.totalPages}"></span>
 </div>
 <div class="container mx-auto p-4">
     <h1 class="text-2xl font-bold mb-4">Product Sales Statistics</h1>
-    <table class="min-w-full bg-white">
-        <thead>
+    <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+        <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
         <tr>
             <th class="py-2">Product ID</th>
             <th class="py-2">Product Name</th>
@@ -42,8 +42,8 @@
         </tr>
         </thead>
         <tbody>
-        <tr th:each="stat : ${productStatistics.content}">
-            <td class="border px-4 py-2" th:text="${stat.productId}"></td>
+        <tr th:each="stat : ${productStatistics.content}" class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+            <th class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white" th:text="${stat.productId}"></th>
             <td class="border px-4 py-2" th:text="${stat.productName}"></td>
             <td class="border px-4 py-2" th:text="${stat.productpriceStock}"></td>
             <td class="border px-4 py-2" th:text="${stat.totalQuantity}"></td>

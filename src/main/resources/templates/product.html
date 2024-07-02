@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://wwww.thymeleaf.org" xmlns:layout=""
       layout:decorate="~{layout/layout}" xmlns:sec>
 <head>
-    <title>Sản phẩm</title>
+    <title>Product</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css">
 
 </head>
@@ -11,7 +11,7 @@
 <div class="flex">
     <!-- Phần bên trái -->
     <div class="w-3/12 bg-gray-200 p-4">
-        <h2 class="text-lg font-bold mb-2">Tìm kiếm</h2>
+        <h2 class="text-lg font-bold mb-2">Search ...</h2>
         <form action="/index"  th:action="@{/product}" method="get"
               class="flex justify-between items-center mb-2">
             <input name="keywords" th:value="${keywords}" th:placeholder="#{Search}" class="w-3/4 py-2 px-4 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500">
@@ -20,13 +20,13 @@
             </button>
         </form>
         <hr>
-        <h2 class="text-lg font-bold mb-2">Danh mục</h2>
+        <h2 class="text-lg font-bold mb-2">Category </h2>
         <ul  th:each="category : ${categories}">
             <li class="mb-2" > <a  th:text="${category.name}" th:href="@{/product?(category=${category.id})}" class="font-medium text-blue-600 dark:text-yellow-500 hover:underline"></a> </li>
         </ul>
-        <h2 class="text-lg font-bold mb-2">Sắp xếp</h2>
+        <h2 class="text-lg font-bold mb-2">Order by </h2>
         <select onchange="location = this.value;" class="w-full p-2 border border-gray-300 rounded">
-            <option value="#" disabled selected>Chọn sắp xếp</option>
+            <option value="#" disabled selected>-- ** --</option>
             <option th:value="@{/product?(p=${param.p},keywords=${param.keywords}, orderByPrice=1)}">Giá tăng dần</option>
             <option th:value="@{/product?(p=${param.p},keywords=${param.keywords}, orderByPrice=0)}">Giá giảm dần</option>
 
@@ -42,7 +42,7 @@
                         <svg class="w-3 h-3 me-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
                             <path d="m19.707 9.293-2-2-7-7a1 1 0 0 0-1.414 0l-7 7-2 2a1 1 0 0 0 1.414 1.414L2 10.414V18a2 2 0 0 0 2 2h3a1 1 0 0 0 1-1v-4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v4a1 1 0 0 0 1 1h3a2 2 0 0 0 2-2v-7.586l.293.293a1 1 0 0 0 1.414-1.414Z"/>
                         </svg>
-                        Home
+                       &nbsp; Home
                     </a>
                 </li>
                 <li>
