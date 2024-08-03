@@ -27,6 +27,7 @@ public class Order implements Serializable{
     Date createDate = new Date();
     @ManyToOne @JoinColumn(name = "Username")
     Account account;
+
     @OneToMany(mappedBy = "order",cascade = CascadeType.ALL)
     List<OrderDetail> orderDetails;
 
